@@ -91,6 +91,7 @@
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;">
         <button class="btn" onclick="startGame()">다시하기</button>
+        <button class="btn btn-small" onclick="goHome()">홈으로</button>
         <button class="btn btn-small btn-share" onclick="shareScore()">카톡 공유</button>
       </div>
       <div class="hint">점수를 공유하고 회원님들과 경쟁하세요!</div>
@@ -176,8 +177,14 @@ document.getElementById('quizBox').classList.add('visible');}
 
 function showCombo(text,x,y){var el=document.createElement('div');el.className='combo-popup';el.style.left=x+'px';el.style.top=y+'px';el.innerText=text;document.getElementById('gameWrapper').appendChild(el);setTimeout(function(){el.remove();},800);}
 
-function shareScore(){var msg='🎾 플래피 테니스 🎾\n\n👤 '+playerName+'\n📊 점수: '+score+'점\n🧠 두뇌점수: '+brainScore+'\n🏆 최고기록: '+bestScore+'점\n\n팝테니스 화원옥포 회원님들!\n이 점수 넘어봐~ 😎🔥\n\n▶ 도전하기: https://hoons9096-cloud.github.io/Tennis-invite/flappy-tennis-pop.html';
-if(navigator.share){navigator.share({title:'플래피 테니스',text:msg}).catch(function(){});}else{navigator.clipboard.writeText(msg).then(function(){alert('점수가 복사되었습니다!\n카카오톡에 붙여넣기 하세요 📋');});}}
+function goHome(){gameState='idle';pipes=[];particles=[];ball=resetBall();
+document.getElementById('uiOverlay').classList.add('active');document.getElementById('gameOverScreen').classList.remove('visible');document.getElementById('startScreen').classList.add('visible');loadRankings('startRankList');}
+
+function copyFallback(text){var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');alert('점수가 복사되었습니다!\n카카오톡에 붙여넣기 하세요 📋');}catch(e){prompt('아래 텍스트를 복사하세요:',text);}document.body.removeChild(ta);}
+function shareScore(){var msg='🎾 플래피 테니스 🎾\n\n👤 '+playerName+'\n📊 점수: '+score+'점\n🧠 두뇌점수: '+brainScore+'\n🏆 최고기록: '+bestScore+'점\n\n팝테니스 화원옥포 회원님들!\n이 점수 넘어봐~ 😎🔥\n\n▶ 도전하기: https://hoons9096-cloud.github.io/PoP/flappy-tennis-pop.html';
+if(navigator.share){navigator.share({title:'플래피 테니스',text:msg}).catch(function(){copyFallback(msg);});}
+else if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(function(){alert('점수가 복사되었습니다!\n카카오톡에 붙여넣기 하세요 📋');}).catch(function(){copyFallback(msg);});}
+else{copyFallback(msg);}}
 
 // ─── DRAWING ───
 function drawBackground(){var sg=ctx.createLinearGradient(0,0,0,H);sg.addColorStop(0,'#0d2137');sg.addColorStop(0.5,'#1a3a5c');sg.addColorStop(1,'#0a1628');ctx.fillStyle=sg;ctx.fillRect(0,0,W,H);

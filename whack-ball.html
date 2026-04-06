@@ -453,7 +453,7 @@ function loadRankings(tid){
 
 function copyFallback(text){var ta=document.createElement('textarea');ta.value=text;ta.style.cssText='position:fixed;top:0;left:0;opacity:0';document.body.appendChild(ta);ta.focus();ta.select();try{document.execCommand('copy');alert('결과가 복사되었습니다!\n카카오톡에 붙여넣기 하세요 📋');}catch(e){prompt('아래 텍스트를 복사하세요:',text);}document.body.removeChild(ta);}
 function shareResult(){
-  var msg='🎯 공 잡아라! 🎯\n\n👤 '+playerName+'\n🏅 점수: '+score+'점\n🎾 적중: '+hits+' / 놓침: '+misses+'\n💣 폭탄: '+bombs+'번\n🔥 최대콤보: '+maxCombo+'x\n\n팝테니스 화원옥포 회원님들~\n내 점수 이겨봐! 🎯\n\n▶ 도전: https://hoons9096-cloud.github.io/Tennis-invite/whack-ball.html';
+  var msg='🎯 공 잡아라! 🎯\n\n👤 '+playerName+'\n🏅 점수: '+score+'점\n🎾 적중: '+hits+' / 놓침: '+misses+'\n💣 폭탄: '+bombs+'번\n🔥 최대콤보: '+maxCombo+'x\n\n팝테니스 화원옥포 회원님들~\n내 점수 이겨봐! 🎯\n\n▶ 도전: https://hoons9096-cloud.github.io/PoP/whack-ball.html';
   if(navigator.share){navigator.share({title:'공 잡아라!',text:msg}).catch(function(){copyFallback(msg);});}
   else if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(msg).then(function(){alert('결과가 복사되었습니다!\n카카오톡에 붙여넣기 하세요 📋');}).catch(function(){copyFallback(msg);});}
   else{copyFallback(msg);}
