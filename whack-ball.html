@@ -72,6 +72,13 @@
   .logo-emoji{font-size:46px;margin-bottom:4px}
   .game-title{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#c8ff00;text-shadow:0 0 25px rgba(200,255,0,0.3);margin-bottom:2px}
   .game-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:14px}
+  .club-banner{width:85%;margin:0 auto 14px;padding:14px 18px;background:linear-gradient(135deg,rgba(200,255,0,0.12),rgba(255,215,0,0.08));border:2px solid rgba(200,255,0,0.35);border-radius:16px;text-align:center;position:relative;overflow:hidden}
+  .club-banner::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(200,255,0,0.06),transparent,rgba(255,215,0,0.06),transparent);animation:bannerSpin 6s linear infinite}
+  @keyframes bannerSpin{to{transform:rotate(360deg)}}
+  .club-banner-inner{position:relative;z-index:1}
+  .club-name{font-size:22px;font-weight:900;color:#c8ff00;text-shadow:0 0 20px rgba(200,255,0,0.5),0 2px 4px rgba(0,0,0,0.5);letter-spacing:2px;margin-bottom:4px}
+  .club-badge{display:inline-block;padding:3px 12px;background:rgba(200,255,0,0.15);border:1px solid rgba(200,255,0,0.3);border-radius:20px;font-size:10px;color:rgba(255,255,255,0.6);letter-spacing:1px}
+  .club-msg{font-size:11px;color:rgba(255,255,255,0.45);margin-top:6px;line-height:1.5}
   .name-section{width:85%;margin-bottom:14px}
   .name-input{width:100%;padding:11px 16px;font-size:16px;font-weight:700;font-family:'Noto Sans KR',sans-serif;border:2px solid rgba(200,255,0,0.25);border-radius:14px;background:rgba(200,255,0,0.04);color:#fff;text-align:center;outline:none;transition:border-color 0.2s}
   .name-input::placeholder{color:rgba(255,255,255,0.2)}
@@ -123,8 +130,13 @@
   <div class="screen-overlay visible" id="startScreen">
     <div class="logo-emoji">🎯</div>
     <div class="game-title">공 잡아라!</div>
-    <div class="game-sub">팝테니스 화원옥포</div>
-    <div style="font-size:11px;color:rgba(255,255,255,0.3);margin-bottom:14px">우리 회원님들을 위해 만든 특별 게임 🎁</div>
+    <div class="club-banner">
+      <div class="club-banner-inner">
+        <div class="club-badge">⭐ PRESENTED BY ⭐</div>
+        <div class="club-name">🎾 팝테니스 화원옥포</div>
+        <div class="club-msg">우리 회원님들을 위해 특별히 만든 게임 🎁</div>
+      </div>
+    </div>
     <div class="name-section">
       <input type="text" class="name-input" id="nameInput" placeholder="이름 입력 (예: 홍길동)" maxlength="8">
       <div class="name-hint">랭킹에 표시될 이름이에요</div>
