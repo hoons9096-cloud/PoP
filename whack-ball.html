@@ -67,12 +67,14 @@
   @keyframes sflash{0%{opacity:1}100%{opacity:0}}
 
   /* Screens */
-  .screen-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:32px 24px 30px;z-index:50;background:rgba(8,20,6,0.93);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity 0.3s;overflow-y:auto}
+  .screen-overlay{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;z-index:50;background:rgba(8,20,6,0.93);backdrop-filter:blur(8px);opacity:0;pointer-events:none;transition:opacity 0.3s;overflow:hidden}
   .screen-overlay.visible{opacity:1;pointer-events:auto}
+  .screen-header{width:100%;padding:20px 24px 0;display:flex;flex-direction:column;align-items:center;flex-shrink:0}
+  .screen-scroll{flex:1;width:100%;overflow-y:auto;display:flex;flex-direction:column;align-items:center;padding:0 24px 30px;-webkit-overflow-scrolling:touch}
   .logo-emoji{font-size:46px;margin-bottom:4px}
   .game-title{font-family:'Orbitron',monospace;font-size:22px;font-weight:900;color:#c8ff00;text-shadow:0 0 25px rgba(200,255,0,0.3);margin-bottom:2px}
   .game-sub{font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:14px}
-  .club-banner{width:85%;margin:0 auto 14px;padding:14px 18px;background:linear-gradient(135deg,rgba(200,255,0,0.12),rgba(255,215,0,0.08));border:2px solid rgba(200,255,0,0.35);border-radius:16px;text-align:center;position:sticky;top:0;z-index:5;overflow:hidden;backdrop-filter:blur(10px)}
+  .club-banner{width:85%;margin:0 auto 10px;padding:12px 16px;background:linear-gradient(135deg,rgba(200,255,0,0.12),rgba(255,215,0,0.08));border:2px solid rgba(200,255,0,0.35);border-radius:16px;text-align:center;position:relative;overflow:hidden}
   .club-banner::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(200,255,0,0.06),transparent,rgba(255,215,0,0.06),transparent);animation:bannerSpin 6s linear infinite}
   @keyframes bannerSpin{to{transform:rotate(360deg)}}
   .club-banner-inner{position:relative;z-index:1}
@@ -128,55 +130,69 @@
 
   <!-- START -->
   <div class="screen-overlay visible" id="startScreen">
-    <div class="logo-emoji">🎯</div>
-    <div class="game-title">공 잡아라!</div>
-    <div class="club-banner">
-      <div class="club-banner-inner">
-        <div class="club-badge">⭐ PRESENTED BY ⭐</div>
-        <div class="club-name">🎾 팝테니스 화원옥포</div>
-        <div class="club-msg">우리 회원님들을 위해 특별히 만든 게임 🎁</div>
+    <div class="screen-header">
+      <div class="logo-emoji">🎯</div>
+      <div class="game-title">공 잡아라!</div>
+      <div class="club-banner">
+        <div class="club-banner-inner">
+          <div class="club-badge">⭐ PRESENTED BY ⭐</div>
+          <div class="club-name">🎾 팝테니스 화원옥포</div>
+          <div class="club-msg">우리 회원님들을 위해 특별히 만든 게임 🎁</div>
+        </div>
       </div>
     </div>
-    <div class="name-section">
-      <input type="text" class="name-input" id="nameInput" placeholder="이름 입력 (예: 홍길동)" maxlength="8">
-      <div class="name-hint">랭킹에 표시될 이름이에요</div>
+    <div class="screen-scroll">
+      <div class="name-section">
+        <input type="text" class="name-input" id="nameInput" placeholder="이름 입력 (예: 홍길동)" maxlength="8">
+        <div class="name-hint">랭킹에 표시될 이름이에요</div>
+      </div>
+      <div class="ranking-card" style="width:85%">
+        <div class="ranking-title">🏆 화원옥포 랭킹 TOP 10</div>
+        <div id="startRankList"><div class="ranking-loading">불러오는 중...</div></div>
+      </div>
+      <div class="rules">
+        🎾 튀어오르는 <b>테니스공</b>을 빠르게 터치!<br>
+        🌟 <b>골드볼</b> — 3배 점수!<br>
+        ⚡ <b>스피드볼</b> — 빨리 사라짐, 2배!<br>
+        💣 <b>폭탄</b> — 누르면 감점! 참으세요<br>
+        🔥 연속 터치 시 <b>콤보 보너스!</b><br>
+        ⏱️ <b>30초</b> 안에 최고점을 노려라!
+      </div>
+      <button class="btn" onclick="beginGame()">시작하기</button>
     </div>
-    <div class="ranking-card" style="width:85%">
-      <div class="ranking-title">🏆 화원옥포 랭킹 TOP 10</div>
-      <div id="startRankList"><div class="ranking-loading">불러오는 중...</div></div>
-    </div>
-    <div class="rules">
-      🎾 튀어오르는 <b>테니스공</b>을 빠르게 터치!<br>
-      🌟 <b>골드볼</b> — 3배 점수!<br>
-      ⚡ <b>스피드볼</b> — 빨리 사라짐, 2배!<br>
-      💣 <b>폭탄</b> — 누르면 감점! 참으세요<br>
-      🔥 연속 터치 시 <b>콤보 보너스!</b><br>
-      ⏱️ <b>30초</b> 안에 최고점을 노려라!
-    </div>
-    <button class="btn" onclick="beginGame()">시작하기</button>
   </div>
 
   <!-- RESULT -->
   <div class="screen-overlay" id="resultScreen">
-    <div class="logo-emoji" id="resultEmoji">🎯</div>
-    <div class="grade" id="gradeText"></div>
-    <div class="result-card">
-      <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:4px">점수</div>
-      <div class="big-score" id="finalScore">0<small>점</small></div>
-      <div class="stats-grid">
-        <div class="stat-box"><div class="val" id="statHit">-</div><div class="lab">적중</div></div>
-        <div class="stat-box"><div class="val" id="statMiss">-</div><div class="lab">놓침</div></div>
-        <div class="stat-box"><div class="val" id="statBomb">-</div><div class="lab">폭탄</div></div>
-        <div class="stat-box"><div class="val" id="statCombo">-</div><div class="lab">최대콤보</div></div>
+    <div class="screen-header">
+      <div class="club-banner">
+        <div class="club-banner-inner">
+          <div class="club-badge">⭐ PRESENTED BY ⭐</div>
+          <div class="club-name">🎾 팝테니스 화원옥포</div>
+        </div>
       </div>
     </div>
-    <div class="ranking-card">
-      <div class="ranking-title">🏆 화원옥포 랭킹</div>
-      <div id="resultRankList"><div class="ranking-loading">불러오는 중...</div></div>
-    </div>
-    <div class="btn-row">
-      <button class="btn btn-sm" onclick="goHome()">홈으로</button>
-      <button class="btn btn-sm btn-kakao" onclick="shareResult()">카톡 공유</button>
+    <div class="screen-scroll">
+      <div class="logo-emoji" id="resultEmoji">🎯</div>
+      <div class="grade" id="gradeText"></div>
+      <div class="result-card">
+        <div style="font-size:11px;color:rgba(255,255,255,0.35);margin-bottom:4px">점수</div>
+        <div class="big-score" id="finalScore">0<small>점</small></div>
+        <div class="stats-grid">
+          <div class="stat-box"><div class="val" id="statHit">-</div><div class="lab">적중</div></div>
+          <div class="stat-box"><div class="val" id="statMiss">-</div><div class="lab">놓침</div></div>
+          <div class="stat-box"><div class="val" id="statBomb">-</div><div class="lab">폭탄</div></div>
+          <div class="stat-box"><div class="val" id="statCombo">-</div><div class="lab">최대콤보</div></div>
+        </div>
+      </div>
+      <div class="ranking-card">
+        <div class="ranking-title">🏆 화원옥포 랭킹</div>
+        <div id="resultRankList"><div class="ranking-loading">불러오는 중...</div></div>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-sm" onclick="goHome()">홈으로</button>
+        <button class="btn btn-sm btn-kakao" onclick="shareResult()">카톡 공유</button>
+      </div>
     </div>
   </div>
 </div>
