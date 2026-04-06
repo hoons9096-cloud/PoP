@@ -15,7 +15,7 @@
   .screen{display:none;flex-direction:column;align-items:center;text-align:center;padding:20px;width:100%}
   .screen.visible{display:flex}
   .title{font-family:'Press Start 2P',monospace;font-size:18px;color:#c8ff00;text-shadow:0 0 20px rgba(200,255,0,0.6),2px 2px 0 #1a4d00;margin-bottom:6px;line-height:1.6}
-  .club-banner{width:85%;margin:0 auto 16px;padding:14px 18px;background:linear-gradient(135deg,rgba(200,255,0,0.12),rgba(255,215,0,0.08));border:2px solid rgba(200,255,0,0.35);border-radius:16px;text-align:center;position:relative;overflow:hidden}
+  .club-banner{width:85%;margin:0 auto 16px;padding:14px 18px;background:linear-gradient(135deg,rgba(200,255,0,0.12),rgba(255,215,0,0.08));border:2px solid rgba(200,255,0,0.35);border-radius:16px;text-align:center;position:sticky;top:0;z-index:5;overflow:hidden;backdrop-filter:blur(10px)}
   .club-banner::before{content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;background:conic-gradient(from 0deg,transparent,rgba(200,255,0,0.06),transparent,rgba(255,215,0,0.06),transparent);animation:bannerSpin 6s linear infinite}
   @keyframes bannerSpin{to{transform:rotate(360deg)}}
   .club-banner-inner{position:relative;z-index:1}
@@ -35,7 +35,7 @@
   .btn-share{background:linear-gradient(135deg,#fee500,#f0d000);color:#3c1e1e}
   .score-display{font-family:'Press Start 2P',monospace;font-size:44px;color:#fff;text-shadow:0 0 30px rgba(200,255,0,0.4);margin:8px 0}
   .best-score{font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:12px}
-  .ranking-box{background:rgba(255,255,255,0.06);border:1px solid rgba(200,255,0,0.15);border-radius:16px;padding:14px;width:85%;margin:8px 0;max-height:220px;overflow-y:auto}
+  .ranking-box{background:rgba(255,255,255,0.06);border:1px solid rgba(200,255,0,0.15);border-radius:16px;padding:14px;width:85%;margin:8px 0}
   .ranking-box h3{color:#c8ff00;font-size:13px;margin-bottom:8px;text-align:center}
   .rank-row{display:flex;justify-content:space-between;align-items:center;padding:5px 4px;font-size:12px;color:rgba(255,255,255,0.75);border-bottom:1px solid rgba(255,255,255,0.05)}
   .rank-row:last-child{border:none}
