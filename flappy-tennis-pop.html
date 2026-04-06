@@ -144,8 +144,8 @@ function loadRankings(tid){
 // ─── CANVAS ───
 var canvas=document.getElementById('game'),ctx=canvas.getContext('2d');
 var W=420,H=746;canvas.width=W;canvas.height=H;
-var ball,pipes,score,bestScore,gameState,frameCount;
-var combo,quizPending,quizActive,brainScore;
+var ball,pipes=[],score=0,bestScore,gameState,frameCount=0;
+var combo=0,quizPending=false,quizActive=false,brainScore=0;
 var particles=[],playerName='';
 var GRAVITY=0.38,JUMP=-6.8,PIPE_SPEED=2.5,PIPE_GAP=155,PIPE_INTERVAL=110,BALL_R=16;
 var COURT_GREEN='#2d7a3a',COURT_DARK='#1e5a28',BALL_YELLOW='#c8ff00';
