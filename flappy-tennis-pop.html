@@ -141,10 +141,27 @@ try{firebase.initializeApp({apiKey:"AIzaSyAhJC21VhFB3girRgLgCMPW_xWp-qcy70M",aut
 function getRef(){return fbOK?db.ref('flappy-pop/rankings'):null;}
 
 // ─── RANKING FUNCTIONS ───
+// ─── ANTI-CHEAT ───
+var _s='p0pT3nn1s';var _gt=0;var _pc=0;
+function _h(name,sc,t){var s=name+':'+sc+':'+t+':'+_s;var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return Math.abs(h).toString(36);}
+function _v(sc,elapsed){
+  if(sc<0)return false;
+  if(elapsed<3&&sc>0)return false;
+  // 총점 = 파이프통과(_pc) + 두뇌점수(brainScore)*3
+  var pipeOnly=sc-brainScore*3;
+  if(pipeOnly<0||pipeOnly!==_pc)return false;
+  // 두뇌점수는 score/5 이하 (퀴즈는 score가 5의 배수일 때 출현)
+  if(brainScore>Math.floor(sc/5))return false;
+  return true;
+}
+
 function saveScore(name,sc,brain){
+  var elapsed=Math.floor((Date.now()-_gt)/1000);
+  if(!_v(sc,elapsed))return;
+  var hash=_h(name,sc,elapsed);
   var key=name.replace(/[.#$/\[\]]/g,'_');
-  var entry={name:name,score:sc,brain:brain,date:new Date().toISOString()};
-  try{var lo=JSON.parse(localStorage.getItem('flappyPopRank')||'{}');if(!lo[key]||sc>lo[key].score)lo[key]=entry;localStorage.setItem('flappyPopRank',JSON.stringify(lo));}catch(e){}
+  var entry={name:name,score:sc,brain:brain,date:new Date().toISOString(),h:hash,t:elapsed};
+  try{var lo=JSON.parse(localStorage.getItem('flappyPopRank')||'{}');if(!lo[key]||!lo[key].h||sc>lo[key].score)lo[key]=entry;localStorage.setItem('flappyPopRank',JSON.stringify(lo));}catch(e){}
   var ref=getRef();if(!ref)return;
   ref.child(key).once('value').then(function(s){var ex=s.val();if(!ex||sc>ex.score)ref.child(key).set(entry);}).catch(function(){});
 }
@@ -155,6 +172,9 @@ function loadRankings(tid){
   var ref=getRef();
   function render(entries){
     if(!entries||entries.length===0){c.innerHTML='<div class="ranking-loading">아직 기록이 없습니다. 첫 도전자가 되세요!</div>';return;}
+    // 해시 없는 옛날 기록 제거
+    entries=entries.filter(function(e){return e.h;});
+    if(entries.length===0){c.innerHTML='<div class="ranking-loading">아직 기록이 없습니다. 첫 도전자가 되세요!</div>';return;}
     entries.sort(function(a,b){return b.score-a.score;});
     var medals=['🥇','🥈','🥉'],me=document.getElementById('nameInput').value.trim()||playerName;
     c.innerHTML='';
@@ -243,7 +263,7 @@ function startGame(){
   if(!playerName){ni.style.borderColor='#ff4444';ni.focus();ni.placeholder='이름을 입력해주세요!';setTimeout(function(){ni.style.borderColor='rgba(200,255,0,0.3)';},1500);return;}
   localStorage.setItem('flappyPopName',playerName);
 
-  ball=resetBall();pipes=[];score=0;combo=0;brainScore=0;quizPending=false;quizActive=false;frameCount=0;particles=[];gameState='playing';
+  ball=resetBall();pipes=[];score=0;combo=0;brainScore=0;quizPending=false;quizActive=false;frameCount=0;particles=[];gameState='playing';_gt=Date.now();_pc=0;
   document.getElementById('uiOverlay').classList.remove('active');document.getElementById('startScreen').classList.remove('visible');document.getElementById('gameOverScreen').classList.remove('visible');document.getElementById('quizBox').classList.remove('visible');
 }
 
@@ -261,7 +281,7 @@ function checkCollision(){var gy=H-50;if(ball.y+BALL_R>gy||ball.y-BALL_R<0)retur
 function update(){if(gameState!=='playing')return;frameCount++;ball.vy+=GRAVITY;ball.y+=ball.vy;ball.rotation+=ball.vy*0.04;
 ball.trail.push({x:ball.x,y:ball.y});if(ball.trail.length>8)ball.trail.shift();
 if(frameCount%PIPE_INTERVAL===0)pipes.push(createPipe(W+60));
-pipes.forEach(function(p){p.x-=PIPE_SPEED;if(!p.passed&&p.x+p.w<ball.x){p.passed=true;score++;combo++;spawnParticles(ball.x,ball.y,'#c8ff00',8);
+pipes.forEach(function(p){p.x-=PIPE_SPEED;if(!p.passed&&p.x+p.w<ball.x){p.passed=true;score++;_pc++;combo++;spawnParticles(ball.x,ball.y,'#c8ff00',8);
 if(combo>=3)showCombo(combo+' COMBO!',ball.x+30,ball.y-30);
 if(score>0&&score%5===0&&!quizPending){quizPending=true;setTimeout(function(){if(gameState==='playing')showQuiz();},300);}}});
 pipes=pipes.filter(function(p){return p.x+p.w>-20;});

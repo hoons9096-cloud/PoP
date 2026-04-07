@@ -208,7 +208,18 @@ var GAME_TIME=30;
 var playerName='',score=0,hits=0,misses=0,bombs=0,combo=0,maxCombo=0;
 var gameTimer=null,spawnTimer=null,timeLeft=0,running=false;
 var holes=[],activeBalls=[];
-var spawnInterval=900; // gets faster
+var spawnInterval=900;
+var _s='wH4ckB4ll';var _gt=0;var _hc=0;
+function _h(name,sc,t){var s=name+':'+sc+':'+t+':'+_s;var h=0;for(var i=0;i<s.length;i++){h=((h<<5)-h)+s.charCodeAt(i);h|=0;}return Math.abs(h).toString(36);}
+function _v(sc,ht,elapsed){
+  if(sc<0)return false;
+  if(elapsed<2&&sc>0)return false;
+  if(ht!==_hc)return false;
+  // 최대 점수 = 히트당 최대40점(골드30+콤보10) + 여유분
+  var maxPts=ht*40+20;
+  if(sc>maxPts)return false;
+  return true;
+}
 
 playerName=localStorage.getItem('whackName')||'';
 document.getElementById('nameInput').value=playerName;
@@ -287,7 +298,7 @@ function tapHole(idx){
   }
 
   // Good hit
-  hits++;combo++;
+  hits++;_hc++;combo++;
   if(combo>maxCombo)maxCombo=combo;
 
   var pts=10;
@@ -362,7 +373,7 @@ function beginGame(){
   if(!playerName){ni.style.borderColor='#ff4444';ni.focus();ni.placeholder='이름을 입력해주세요!';setTimeout(function(){ni.style.borderColor='rgba(200,255,0,0.25)';},1500);return;}
   localStorage.setItem('whackName',playerName);
 
-  score=0;hits=0;misses=0;bombs=0;combo=0;maxCombo=0;timeLeft=GAME_TIME;running=false;
+  score=0;hits=0;misses=0;bombs=0;combo=0;maxCombo=0;timeLeft=GAME_TIME;running=false;_gt=Date.now();_hc=0;
 
   document.getElementById('startScreen').classList.remove('visible');
   document.getElementById('resultScreen').classList.remove('visible');
@@ -451,9 +462,12 @@ function goHome(){
 
 // Rankings
 function saveScore(name,sc,h,m,b,mc){
+  var elapsed=Math.floor((Date.now()-_gt)/1000);
+  if(!_v(sc,h,elapsed))return;
+  var hash=_h(name,sc,elapsed);
   var key=name.replace(/[.#$/\[\]]/g,'_');
-  var entry={name:name,score:sc,hits:h,misses:m,bombs:b,maxCombo:mc,date:new Date().toISOString()};
-  try{var lo=JSON.parse(localStorage.getItem('whackRank')||'{}');if(!lo[key]||sc>lo[key].score)lo[key]=entry;localStorage.setItem('whackRank',JSON.stringify(lo));}catch(e){}
+  var entry={name:name,score:sc,hits:h,misses:m,bombs:b,maxCombo:mc,date:new Date().toISOString(),hx:hash,t:elapsed};
+  try{var lo=JSON.parse(localStorage.getItem('whackRank')||'{}');if(!lo[key]||!lo[key].hx||sc>lo[key].score)lo[key]=entry;localStorage.setItem('whackRank',JSON.stringify(lo));}catch(e){}
   var ref=getRef();if(!ref)return;
   ref.child(key).once('value').then(function(s){var ex=s.val();if(!ex||sc>ex.score)ref.child(key).set(entry);}).catch(function(){});
 }
@@ -464,6 +478,8 @@ function loadRankings(tid){
   var ref=getRef();
   function render(entries){
     if(!entries||entries.length===0){c.innerHTML='<div class="ranking-loading">아직 기록이 없습니다!</div>';return;}
+    entries=entries.filter(function(e){return e.hx;});
+    if(entries.length===0){c.innerHTML='<div class="ranking-loading">아직 기록이 없습니다!</div>';return;}
     entries.sort(function(a,b){return b.score-a.score;});
     var medals=['🥇','🥈','🥉'],me=document.getElementById('nameInput').value.trim()||playerName;
     c.innerHTML='';
